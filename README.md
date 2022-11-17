@@ -2,7 +2,7 @@
 
 ## はじめに
 
-[Spring Boot](http://projects.spring.io/spring-boot/) / [Kotlin](https://kotlinlang.org/) を元にしたデモンストレーションです。  
+[Spring Boot](http://projects.spring.io/spring-boot/) / [Kotlin](https://kotlinlang.org/) を元にしたサンプル実装のデモンストレーションです。  
 
 ## 事前にインストールするもの
 
