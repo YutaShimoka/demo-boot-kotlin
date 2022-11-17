@@ -13,11 +13,13 @@ echo "[INFO] *****$(basename "$0") START*****"
 echo "[INFO] start time: $(date "+%Y/%m/%d %T")"
 start_time=$(date +%s)
 
-# Initial Settings
-
-database="db_example"
-
 # Actions
+
+## preparation
+
+source ./conf/local.conf
+
+cd import
 
 ## prior confirmation
 
@@ -26,20 +28,16 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
-if ! [ "$(mysql --defaults-extra-file=~/my.cnf ${database} -s -N -e "select 'conn'")" ]; then
+if ! [ "$(mysql --defaults-extra-file=~/my.cnf "${database}" -s -N -e "select 'conn'")" ]; then
 	echo "[ERROR] connection failed"
 	exit 1
 fi
 
-## preparation
-
-cd import
-
 ## execution
 
 ### create table
-mysql --defaults-extra-file=~/my.cnf ${database} -e "DROP TABLE IF EXISTS \`book\`;"
-mysql --defaults-extra-file=~/my.cnf ${database} -e " \
+mysql --defaults-extra-file=~/my.cnf "${database}" -e "DROP TABLE IF EXISTS \`book\`;"
+mysql --defaults-extra-file=~/my.cnf "${database}" -e " \
 CREATE TABLE \`book\` ( \
   \`id\` bigint unsigned NOT NULL AUTO_INCREMENT, \
   \`title\` varchar(255) DEFAULT NULL, \
@@ -54,9 +52,9 @@ CREATE TABLE \`book\` ( \
 
 ### change local_infile settings
 echo "[INFO][START] change local_infile settings"
-local_infile=$(mysql --defaults-extra-file=~/my.cnf ${database} -s -N -e "select @@local_infile;")
+local_infile=$(mysql --defaults-extra-file=~/my.cnf "${database}" -s -N -e "select @@local_infile;")
 if [ "${local_infile}" != "1" ]; then
-	mysql --defaults-extra-file=~/my.cnf ${database} -e "SET PERSIST local_infile = 1;"
+	mysql --defaults-extra-file=~/my.cnf "${database}" -e "SET PERSIST local_infile = 1;"
 	echo "[INFO] change local_infile settings ${local_infile} to 1"
 else
 	echo "[INFO] nothing to do"
@@ -68,7 +66,7 @@ echo "[INFO][START] import data"
 for arg in "$@"; do
 	file_name=$arg
 	echo "[INFO][START] import ${file_name}"
-	mysql --defaults-extra-file=~/my.cnf --local_infile=1 ${database} -e "
+	mysql --defaults-extra-file=~/my.cnf --local_infile=1 "${database}" -e "
 	LOAD DATA LOCAL INFILE '${file_name}' INTO TABLE book FIELDS TERMINATED BY '\t' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES ( \
 		@TITLE, \
 		@SUB_TITLE, \
@@ -93,7 +91,7 @@ echo "[INFO][END] import data"
 ### rollback local_inline settings
 echo "[INFO][START] rollback local_inline settings"
 if [ "${local_infile}" != "1" ]; then
-	mysql --defaults-extra-file=~/my.cnf ${database} -e "SET PERSIST local_infile = ${local_infile};"
+	mysql --defaults-extra-file=~/my.cnf "${database}" -e "SET PERSIST local_infile = ${local_infile};"
 	echo "[INFO] rollback local_inline settings 1 to ${local_infile}"
 else
 	echo "[INFO] nothing to do"

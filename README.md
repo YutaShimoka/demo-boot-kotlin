@@ -14,8 +14,6 @@
 ## 前提条件
 
 * my.cnfの作成
-* データベース作成
-* テストデータ作成
 * application-local.ymlの作成
 
 <details><summary>Click to expand</summary><br>
@@ -55,81 +53,6 @@ $ cat ~/my.cnf
 
 $ mysql --defaults-extra-file=~/my.cnf -s -N -e "select '接続に成功しました。'" 2>/dev/null || echo "接続に失敗しました。"
 ## 接続に成功しました。
-```
-
-### データベース作成
-
-**事前確認**
-
-```bash
-$ mysql --defaults-extra-file=~/my.cnf -e "show databases;"
-## +--------------------+
-## | Database           |
-## +--------------------+
-## | information_schema |
-## | mysql              |
-## | performance_schema |
-## | sakila             |
-## | sys                |
-## | world              |
-## +--------------------+
-```
-
-> ※ db_exampleが存在しないこと。
-
-**データベース作成**
-
-```
-$ mysql --defaults-extra-file=~/my.cnf -e "create database db_example;"
-```
-
-**事後確認**
-
-```bash
-$ mysql --defaults-extra-file=~/my.cnf -e "show databases like 'db_example';"
-## +-----------------------+
-## | Database (db_example) |
-## +-----------------------+
-## | db_example            |
-## +-----------------------+
-```
-
-> ※ db_exampleが作成されたこと。
-
-
-### テストデータ作成
-
-**事前確認**
-
-```bash
-$ mysql --defaults-extra-file=~/my.cnf db_example -s -N -e "select '接続に成功しました。'" 2>/dev/null || echo "接続に失敗しました。"
-# 接続に成功しました。
-```
-
-**Shellを実行**
-
-```bash
-$ cd demo-boot-kotlin/tools
-
-$ sh create_test_data.sh jm2020_渡部昇一.tsv jm2021_渡部昇一.tsv
-```
-
-**事後確認**
-
-```bash
-$ mysql --defaults-extra-file=~/my.cnf db_example -s -N -e "select count(*) from book;"
-## 11
-
-$ mysql --defaults-extra-file=~/my.cnf db_example -e "select * from book order by rand() limit 1\G"
-## *************************** 1. row ***************************
-##             id: 8
-##          title: 幸福なる人生ウォレス伝
-##      sub_title: 渡部昇一遺稿
-##        edition: NULL
-##         author: 渡部昇一 著
-##      publisher: 育鵬社
-## published_date: 2020-12-00
-##      isbn_code: 978-4-594-08487-5
 ```
 
 ### application-local.ymlの作成
@@ -181,9 +104,7 @@ $ cat src/main/resources/application-local.yml
 ## サーバ起動
 
 ```bash
-$ cd demo-boot-kotlin
-
-$ ./gradlew bootRun
+$ sh demo-boot-kotlin/tools/deploy.sh jm2020_渡部昇一.tsv jm2021_渡部昇一.tsv
 ```
 
 ## 動作確認
