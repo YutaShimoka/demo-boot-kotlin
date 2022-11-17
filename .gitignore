@@ -7,6 +7,8 @@ build/
 
 application-local.yml
 
+/tools/import
+
 ### STS ###
 .apt_generated
 .classpath
