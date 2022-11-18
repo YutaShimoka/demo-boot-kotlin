@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e -o pipefail -o errtrace
-trap 'echo "[INFO] *****$(basename "$0") END*****"' 2
 err_holder() {
 	num="$1"
 	echo "[ERROR] Oops, an error occurred. [L${num}]"
@@ -36,4 +35,5 @@ echo "[INFO] server start"
 
 cd ..
 
+trap 'echo "[INFO] *****$(basename "$0") END*****"' 2
 ./gradlew bootRun || if [ $? == 130 ]; then true; else false; fi
