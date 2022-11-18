@@ -16,7 +16,7 @@
 * my.cnfの作成
 * application-local.ymlの作成
 
-<details><summary>Click to expand</summary><br>
+<details><summary>Click to expand</summary>
 
 ### my.cnfの作成
 
