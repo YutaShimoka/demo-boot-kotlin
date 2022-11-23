@@ -1,8 +1,11 @@
 package demo
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -17,6 +20,10 @@ class BookController(private val service: BookService) {
     @GetMapping("/books")
     fun getBooks(): List<BookUI> =
         service.findAllByOrderByPublishedDateDesc().map { BookUI.of(it) }
+
+    @GetMapping("/search")
+    fun getBooks(pageable: Pageable, @RequestParam author: String): Page<BookUI> =
+        service.findAllByAuthorOrderByPublishedDateDesc(pageable, author).map { BookUI.of(it) }
 }
 
 /** 書誌情報の表示用Dto  */
